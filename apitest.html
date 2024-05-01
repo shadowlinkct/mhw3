@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="apitest.js" defer="true"></script>
+    <link rel="stylesheet" href="apitest.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>mhw3</title>
+</head>
+<body>
+    <form name ='search_content' id='search_content'>
+			
+        <h1>Ricerca contenuto da API con Key Authentication e OAuth2.0</h1>
+        
+        <label>Contenuto: <input type='text' name = 'content' id ='content'></label>	
+            
+        <select name = 'tipo' id='tipo'>
+            <option value='immagine'>Immagine</option>
+            <option value='gif'>GIF</option>
+            <option value='pet'>PET Adoption</option>
+        </select>
+        
+        <label>&nbsp;<input class="submit" type='submit'></label>
+                
+    </form>
+        
+    <article id="album-view">
+        
+    </article>	
+
+    <article id="modale" class="hidden"> 
+    
+    </article>
+</body>
+</html>

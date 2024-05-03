@@ -202,7 +202,6 @@ function apriModale(event) {
 	document.body.classList.add('no-scroll');
 }
 
-
 function chiudiModale(event) {
 	console.log(event);
 	if (event.key === 'Escape') {

@@ -98,7 +98,7 @@ function onJson_gif(json) {
 	const results = json.data
 	for (result of results) {
 		console.log(result + 'questo e un result');
-	}  
+	}
 
 	if (results.length == 0) {
 		const errore = document.createElement("h1");
@@ -143,48 +143,32 @@ function onTokenResponse(response) {
 	return response.json();
 }
 
-function search(event) {
-	// Impedisci il submit del form (da mettere sempre)
+async function search(event) {
 	event.preventDefault();
 
-	// Leggi valore del campo di testo, .value torna il testo dentro la casella di testo
 	const content = document.querySelector('#content').value;
 
-	// verifico che sia stato effettivamente inserito del testo, bisogna formattarlo per essere mandato all'API con encodeURI...
 	if (content) {
 		const text = encodeURIComponent(content);
 		console.log('Eseguo ricerca elementi riguardanti: ' + text);
 
-		// Leggi l'opzione scelta
-		const tipo = document.querySelector('#tipo').value;
-		console.log('Ricerco elementi di tipo: ' + tipo);
+		try {
+			// Ottieni tutti i dati degli esercizi
+			const allExercises = await fetchAllExerciseBaseData();
 
+			// Filtra gli esercizi in base al nome
+			const filteredExercises = allExercises.filter(exercise => {
+				return exercise.exercises.some(ex => ex.name.toLowerCase().includes(text.toLowerCase()) && ex.language === 13);
+			});
 
-		//in base al tipo selezionato, eseguo funzioni diverse, rivedere operatori tipo (===)
-		if (tipo === "immagine") {
-			// Esegui fetch, per mettere tante richieste di solito si usa il metodo POST
-			img_request = img_api_endpoint + '?key=' + key_img + '&q=' + text + '&per_page=' + numResults;
-			fetch(img_request).then(onResponse).then(onJson_img);
-
-
-		} else if (tipo === "gif") {
-			gif_request = gif_api_endpoint + '?api_key=' + key_gif + '&q=' + text + '&limit=' + numResults;
-			fetch(gif_request).then(onResponse).then(onJson_gif);
-		} else if (tipo === 'pet') {
-			const status = 'adoptable'
-			fetch('https://api.petfinder.com/v2/animals?type=' + text + '&status=' + status,
-				{
-					headers: {
-						'Authorization': token_data.token_type + ' ' + token_data.access_token,
-						'Content-Type': 'application/x-www-form-urlencoded'
-					}
-				}).then(onResponse).then(onJson_pet);
+			// Processa i dati degli esercizi filtrati
+			processExerciseData(filteredExercises);
+		} catch (error) {
+			handleError(error);
 		}
 	}
-	else {
-		alert("Inserisci il testo per cui effettuare la ricerca");
-	}
 }
+
 
 //al click di uno dei contenuti trovati
 function apriModale(event) {
@@ -233,66 +217,64 @@ const API_URL = 'https://wger.de/api/v2/';
 const TOKEN = '62e95f2d76b4aefd161d1f16cd487a5bb3ad3db0';
 
 async function fetchAllExerciseBaseData() {
-    let url = API_URL + 'exercisebaseinfo/?language=13';
-    let allResults = [];
+	let url = API_URL + 'exercisebaseinfo/?language=13';
+	let allResults = [];
 
-    while (url) {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Token ' + TOKEN,
-                'Accept': 'application/json'
-            }
-        });
+	while (url) {
+		const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				'Authorization': 'Token ' + TOKEN,
+				'Accept': 'application/json'
+			}
+		});
 
-        if (!response.ok) {
-            throw new Error('HTTP error! status: ' + response.status);
-        }
+		if (!response.ok) {
+			throw new Error('HTTP error! status: ' + response.status);
+		}
 
-        const data = await response.json();
-        allResults = allResults.concat(data.results);
+		const data = await response.json();
+		allResults = allResults.concat(data.results);
 
-        // Imposta l'URL per la prossima pagina di risultati
-        url = data.next;
-    }
+		// Imposta l'URL per la prossima pagina di risultati
+		url = data.next;
+	}
 
-    return allResults;
+	return allResults;
 }
 
 function processExerciseData(data) {
-    for (let i = 0; i < data.length; i++) {
-        let exercise = data[i];
-        if (exercise.exercises && exercise.exercises.length > 0) {
-            let italianExercises = [];
-            for (let j = 0; j < exercise.exercises.length; j++) {
-                if (exercise.exercises[j].language === 13) {
-                    italianExercises.push(exercise.exercises[j]);
-                }
-            }
-            for (let k = 0; k < italianExercises.length; k++) {
-                let italianExercise = italianExercises[k];
-                console.log('Name: ' + italianExercise.name);
-                console.log('Description: ' + italianExercise.description);
-                if (exercise.images && exercise.images.length > 0) {
-                    console.log('Image: ' + exercise.images[0].image);
-                }
-                console.log('-------------------------');
-            }
-        }
-    }
+	const resultsDiv = document.querySelector('#album-view'); // Supponendo che ci sia un div con id 'results' dove inserire i risultati
+
+	for (let i = 0; i < data.length; i++) {
+		let exercise = data[i];
+		if (exercise.exercises && exercise.exercises.length > 0) {
+			let italianExercises = [];
+			for (let j = 0; j < exercise.exercises.length; j++) {
+				if (exercise.exercises[j].language === 13) {
+					italianExercises.push(exercise.exercises[j]);
+				}
+			}
+			for (let k = 0; k < italianExercises.length; k++) {
+				let italianExercise = italianExercises[k];
+
+				// Crea un nuovo div per ogni esercizio
+				let exerciseDiv = document.createElement('div');
+				exerciseDiv.innerHTML = `
+                    <h2>${italianExercise.name}</h2>
+                    <p>${italianExercise.description}</p>
+                    ${exercise.images && exercise.images.length > 0 ? `<img src="${exercise.images[0].image}" alt="${italianExercise.name}">` : ''}
+                `;
+				resultsDiv.appendChild(exerciseDiv);
+			}
+		}
+	}
 }
+
 
 function handleError(error) {
-    console.log('There was a problem with the fetch operation: ' + error.message);
+	console.log('There was a problem with the fetch operation: ' + error.message);
 }
-
-// Uso del metodo
-fetchAllExerciseBaseData()
-    .then(processExerciseData)
-    .catch(handleError);
-
-
-
 
 // Aggiungo event listener al form1 per la RICERCA
 const form = document.querySelector('#search_content');

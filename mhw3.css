@@ -283,7 +283,7 @@ div.centerlink a:hover {
   border-bottom: 1px solid #b4b4b4;
 }
 
-.dropdown-content p {
+.dropdown-content p,.dropdown-content a {
   display: block;
   border-bottom: 1px solid #ebebeb;
   padding: 10px 15px;

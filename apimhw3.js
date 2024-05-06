@@ -19,7 +19,7 @@ async function search(event) {
 			// Processa i dati degli esercizi filtrati
 			processExerciseData(filteredExercises);
 		} catch (error) {
-			handleError(error);
+			onError(error);
 		}
 	}
 }
@@ -65,35 +65,46 @@ async function fetchAllExerciseBaseData() {
 }
 
 function processExerciseData(data) {
-	const resultsDiv = document.querySelector('#album-view');
+    const resultsDiv = document.querySelector('#album-view');
 
-	for (let i = 0; i < data.length; i++) {
-		let exercise = data[i];
-		if (exercise.exercises && exercise.exercises.length > 0) {
-			let italianExercises = [];
-			for (let j = 0; j < exercise.exercises.length; j++) {
-				if (exercise.exercises[j].language === 13) {
-					italianExercises.push(exercise.exercises[j]);
-				}
-			}
-			for (let k = 0; k < italianExercises.length; k++) {
-				let italianExercise = italianExercises[k];
+    for (let i = 0; i < data.length; i++) {
+        let exercise = data[i];
+        if (exercise.exercises && exercise.exercises.length > 0) {
+            let italianExercises = [];
+            for (let j = 0; j < exercise.exercises.length; j++) {
+                if (exercise.exercises[j].language === 13) {
+                    italianExercises.push(exercise.exercises[j]);
+                }
+            }
+            for (let k = 0; k < italianExercises.length; k++) {
+                let italianExercise = italianExercises[k];
 
-				// Crea un nuovo div per ogni esercizio
-				let exerciseDiv = document.createElement('div');
-				exerciseDiv.innerHTML = `
-                    <h2>${italianExercise.name}</h2>
-                    <p>${italianExercise.description}</p>
-                    ${exercise.images && exercise.images.length > 0 ? `<img src="${exercise.images[0].image}" alt="${italianExercise.name}">` : ''}
-                `;
-				resultsDiv.appendChild(exerciseDiv);
-			}
-		}
-	}
+                // Crea un nuovo div per ogni esercizio
+                let exerciseDiv = document.createElement('div');
+
+                let h2 = document.createElement('h2');
+                h2.textContent = italianExercise.name;
+                exerciseDiv.appendChild(h2);
+
+                let p = document.createElement('p');
+                p.textContent = italianExercise.description;
+                exerciseDiv.appendChild(p);
+
+                if (exercise.images && exercise.images.length > 0) {
+                    let img = document.createElement('img');
+                    img.src = exercise.images[0].image;
+                    img.alt = italianExercise.name;
+                    exerciseDiv.appendChild(img);
+                }
+
+                resultsDiv.appendChild(exerciseDiv);
+            }
+        }
+    }
 }
 
 
-function handleError(error) {
+function onError(error) {
 	console.log('There was a problem with the fetch operation: ' + error.message);
 }
 

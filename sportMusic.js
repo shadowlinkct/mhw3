@@ -37,7 +37,6 @@ async function ottieniPlaylistPerGenere(token, idGenere) {
     return dati.playlists.items;
 }
 
-
 async function ottieniBrani(token, endPointBrani) {
     const limite = 10;
     const risultato = await fetch(endPointBrani + '?limit=' + limite, {
@@ -61,11 +60,11 @@ async function ottieniBrano(token, endPointBrano) {
 
 // Modulo UI
 var elementiDOM = {
-    selectGenere: '#select_genre',
+    //selectGenere: '#select_genre',
     selectPlaylist: '#select_playlist',
     pulsanteInvia: '#btn_submit',
     divDettaglioCanzone: '#song-detail',
-    hfToken: '#hidden_token',
+    hiddenToken: '#hidden_token',
     divListaCanzoni: '.song-list'
 };
 
@@ -129,8 +128,6 @@ function creaDettaglioBrano(img, titolo, artista) {
     divDettaglio.appendChild(artistaElement);
 }
 
-
-
 function resettaDettaglioBrano() {
     ottieniCampiInput().dettaglioCanzone.textContent = '';
 }
@@ -147,12 +144,12 @@ function resettaPlaylist() {
 
 
 function memorizzaToken(valore) {
-    document.querySelector(elementiDOM.hfToken).value = valore;
+    document.querySelector(elementiDOM.hiddenToken).value = valore;
 }
 
 function ottieniTokenMemorizzato() {
     return {
-        token: document.querySelector(elementiDOM.hfToken).value
+        token: document.querySelector(elementiDOM.hiddenToken).value
     }
 }
 
@@ -165,8 +162,8 @@ function ottieniTokenMemorizzato() {
         creaGenere(generi[i].name, generi[i].id);
     }
 }
-*/
-// Modulo App
+oppure ------------------
+
 async function caricaGeneri() {
     const token = await ottieniToken();           
     memorizzaToken(token);
@@ -176,6 +173,7 @@ async function caricaGeneri() {
         if (generi[i].name.toLowerCase() === "allenamento") {
             creaGenere(generi[i].name, generi[i].id);
             idGenereAllenamento = generi[i].id;
+            console.log('ID della categoria "allenamento":', idGenereAllenamento); // Aggiunta di console.log qui
             break;
         }
     }
@@ -186,9 +184,18 @@ async function caricaGeneri() {
         }
     }
 }
-
-var campiInputDOM = ottieniCampiInput();
-
+*/
+// Modulo App
+async function caricaGeneri() {
+    const token = await ottieniToken();
+    memorizzaToken(token);
+    const idGenereAllenamento = '0JQ5DAqbMKFAXlCG6QvYQ4';
+    const playlist = await ottieniPlaylistPerGenere(token, idGenereAllenamento);
+    for (let j = 0; j < playlist.length; j++) {
+        creaPlaylist(playlist[j].name, playlist[j].tracks.href);
+    }
+}
+/* 
 campiInputDOM.genere.addEventListener('change', async function () {
     resettaPlaylist();
     const token = ottieniTokenMemorizzato().token;
@@ -198,19 +205,21 @@ campiInputDOM.genere.addEventListener('change', async function () {
     playlist.forEach(function (p) {
         creaPlaylist(p.name, p.tracks.href);
     });
-});
-
-campiInputDOM.invia.addEventListener('click', async function (e) {
-    e.preventDefault();
+}); */
+let campiInputDOM = ottieniCampiInput();
+async function gestisciInvio(evento) {
+    evento.preventDefault();
     resettaBrani();
     const token = ottieniTokenMemorizzato().token;
     const selectPlaylist = ottieniCampiInput().playlist;
     const endPointBrani = selectPlaylist.options[selectPlaylist.selectedIndex].value;
     const brani = await ottieniBrani(token, endPointBrani);
-    brani.forEach(function (el) {
-        creaBrano(el.track.href, el.track.name)
-    });
-});
+    for (const brano of brani) {
+        creaBrano(brano.track.href, brano.track.name);
+    }
+}
+
+campiInputDOM.invia.addEventListener('click', gestisciInvio);
 
 campiInputDOM.brani.addEventListener('click', async function (e) {
     e.preventDefault();

@@ -1,27 +1,41 @@
-async function search(event) {
-	event.preventDefault();
+function esercizioCorrisponde(ex, text) {
+	return ex.name.toLowerCase().includes(text.toLowerCase()) && ex.language === 13;
+}
 
-	const content = document.querySelector('#content').value;
-
-	if (content) {
-		const text = encodeURIComponent(content);
-		console.log('Eseguo ricerca elementi riguardanti: ' + text);
-
-		try {
-			// Ottieni tutti i dati degli esercizi
-			const allExercises = await fetchAllExerciseBaseData();
-
-			// Filtra gli esercizi in base al nome
-			const filteredExercises = allExercises.filter(exercise => {
-				return exercise.exercises.some(ex => ex.name.toLowerCase().includes(text.toLowerCase()) && ex.language === 13);
-			});
-
-			// Processa i dati degli esercizi filtrati
-			processExerciseData(filteredExercises);
-		} catch (error) {
-			onError(error);
+function esercizioFiltrato(exercise, text) {
+	for (let i = 0; i < exercise.exercises.length; i++) {
+		if (esercizioCorrisponde(exercise.exercises[i], text)) {
+			return true;
 		}
 	}
+	return false;
+}
+async function search(event) {
+    event.preventDefault();
+
+    const text = document.querySelector('#content').value.toLowerCase();
+
+    if (text) {
+        console.log('Eseguo ricerca elementi riguardanti: ' + text);
+
+        try {
+            // Ottieni tutti i dati degli esercizi
+            const allExercises = await fetchAllExerciseBaseData();
+
+            // Filtra gli esercizi in base al nome
+            let filteredExercises = [];
+            for (let i = 0; i < allExercises.length; i++) {
+                if (esercizioFiltrato(allExercises[i], text)) {
+                    filteredExercises.push(allExercises[i]);
+                }
+            }
+
+            // Processa i dati degli esercizi filtrati
+            processExerciseData(filteredExercises);
+        } catch (error) {
+            onError(error);
+        }
+    }
 }
 
 function prevent(event) {
@@ -65,42 +79,42 @@ async function fetchAllExerciseBaseData() {
 }
 
 function processExerciseData(data) {
-    const resultsDiv = document.querySelector('#album-view');
+	const resultsDiv = document.querySelector('#album-view');
 
-    for (let i = 0; i < data.length; i++) {
-        let exercise = data[i];
-        if (exercise.exercises && exercise.exercises.length > 0) {
-            let italianExercises = [];
-            for (let j = 0; j < exercise.exercises.length; j++) {
-                if (exercise.exercises[j].language === 13) {
-                    italianExercises.push(exercise.exercises[j]);
-                }
-            }
-            for (let k = 0; k < italianExercises.length; k++) {
-                let italianExercise = italianExercises[k];
+	for (let i = 0; i < data.length; i++) {
+		let exercise = data[i];
+		if (exercise.exercises && exercise.exercises.length > 0) {
+			let italianExercises = [];
+			for (let j = 0; j < exercise.exercises.length; j++) {
+				if (exercise.exercises[j].language === 13) {
+					italianExercises.push(exercise.exercises[j]);
+				}
+			}
+			for (let k = 0; k < italianExercises.length; k++) {
+				let italianExercise = italianExercises[k];
 
-                // Crea un nuovo div per ogni esercizio
-                let exerciseDiv = document.createElement('div');
+				// Crea un nuovo div per ogni esercizio
+				let exerciseDiv = document.createElement('div');
 
-                let h2 = document.createElement('h2');
-                h2.textContent = italianExercise.name;
-                exerciseDiv.appendChild(h2);
+				let h2 = document.createElement('h2');
+				h2.textContent = italianExercise.name;
+				exerciseDiv.appendChild(h2);
 
-                let p = document.createElement('p');
-                p.textContent = italianExercise.description;
-                exerciseDiv.appendChild(p);
+				let p = document.createElement('p');
+				p.textContent = italianExercise.description;
+				exerciseDiv.appendChild(p);
 
-                if (exercise.images && exercise.images.length > 0) {
-                    let img = document.createElement('img');
-                    img.src = exercise.images[0].image;
-                    img.alt = italianExercise.name;
-                    exerciseDiv.appendChild(img);
-                }
+				if (exercise.images && exercise.images.length > 0) {
+					let img = document.createElement('img');
+					img.src = exercise.images[0].image;
+					img.alt = italianExercise.name;
+					exerciseDiv.appendChild(img);
+				}
 
-                resultsDiv.appendChild(exerciseDiv);
-            }
-        }
-    }
+				resultsDiv.appendChild(exerciseDiv);
+			}
+		}
+	}
 }
 
 

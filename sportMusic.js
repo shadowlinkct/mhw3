@@ -2,8 +2,14 @@
 var ClientID = 'ab44cf466d404c1194e90a7b7cd56e2f';
 var secretKey = 'c9fe4d2f6b8d433e8f25294f86b26c2c';
 
+async function onResponse(url, options) {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    return data;
+}
+
 async function ottieniToken() {
-    const risultato = await fetch('https://accounts.spotify.com/api/token', {
+    const dati = await onResponse('https://accounts.spotify.com/api/token', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -12,49 +18,44 @@ async function ottieniToken() {
         body: 'grant_type=client_credentials'
     });
 
-    const dati = await risultato.json();
     return dati.access_token;
 }
 
 async function ottieniGeneri(token) {
-    const risultato = await fetch(`https://api.spotify.com/v1/browse/categories`, {
+    const dati = await onResponse(`https://api.spotify.com/v1/browse/categories`, {
         method: 'GET',
         headers: { 'Authorization': 'Bearer ' + token }
     });
 
-    const dati = await risultato.json();
     return dati.categories.items;
 }
 
 async function ottieniPlaylistPerGenere(token, idGenere) {
     const limite = 10;
-    const risultato = await fetch('https://api.spotify.com/v1/browse/categories/' + idGenere + '/playlists?limit=' + limite, {
+    const dati = await onResponse('https://api.spotify.com/v1/browse/categories/' + idGenere + '/playlists?limit=' + limite, {
         method: 'GET',
         headers: { 'Authorization': 'Bearer ' + token }
     });
 
-    const dati = await risultato.json();
     return dati.playlists.items;
 }
 
 async function ottieniBrani(token, endPointBrani) {
     const limite = 10;
-    const risultato = await fetch(endPointBrani + '?limit=' + limite, {
+    const dati = await onResponse(endPointBrani + '?limit=' + limite, {
         method: 'GET',
         headers: { 'Authorization': 'Bearer ' + token }
     });
 
-    const dati = await risultato.json();
     return dati.items;
 }
 
 async function ottieniBrano(token, endPointBrano) {
-    const risultato = await fetch(endPointBrano, {
+    const dati = await onResponse(endPointBrano, {
         method: 'GET',
         headers: { 'Authorization': 'Bearer ' + token }
     });
 
-    const dati = await risultato.json();
     return dati;
 }
 

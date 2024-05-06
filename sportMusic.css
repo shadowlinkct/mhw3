@@ -4,6 +4,12 @@ body {
     color: #000000;
     margin: 0;
 }
+.spotyimg{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+}
 .spotydivprincipale{
     display: flex;
     align-items: center;

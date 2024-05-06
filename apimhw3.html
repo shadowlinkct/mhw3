@@ -3,6 +3,7 @@
 
 <head>
     <script src="apimhw3.js" defer="true"></script>
+    <script src="general.js" defer="true"></script>
     <link rel="stylesheet" href="apimhw3.css" />
     <link rel="stylesheet" href="mhw3.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,6 +20,9 @@
     <title>mhw3</title>
 </head>
 <body>
+    <div class="fixed-button">
+        <p>?</p><a>Assistenza</a>
+    </div>
     <nav>
         <div id="flexlogin">
             <div id="loginelemcontainer">
@@ -43,7 +47,7 @@
                 <div class="centerlink-item" id="rivista"><a>RIVISTA</a><img src="img/forward-arrow.png" /></div>
                 <div class="centerlink-item" id="videocorsi"><a>VIDEOCORSI</a><img src="img/forward-arrow.png" />
                 </div>
-                <div class="centerlink-item" id="formazioni"><a>FORMAZIONI</a><img src="img/forward-arrow.png" />
+                <div class="centerlink-item" id="formazioni"><a>API</a><img src="img/forward-arrow.png" />
                 </div>
                 <div class="centerlink-item" id="personal"><a>PERSONAL TRAINER</a><img
                         src="img/forward-arrow.png" /></div>
@@ -111,11 +115,10 @@
             </div>
             <div class="dropdown-content hidden" id="formazioniContent">
                 <div class="titledropdown">
-                    <h3> FORMAZIONI </h3>
+                    <h3> API </h3>
                     <div>
-                        <p>Master inVictus Academy</p>
-                        <p>inVictus Academy</p>
-                        <p>Project Convention V24</p>
+                        <a href="apimhw3.html">Esercizi</a>
+                        <a href="sportMusic.html">Le nostre playlist</a>
                     </div>
                 </div>
             </div>
@@ -136,11 +139,6 @@
         
         <label>Contenuto: <input type='text' name = 'content' id ='content'></label>	
             
-        <select name = 'tipo' id='tipo'>
-            <option value='immagine'>Immagine</option>
-            <option value='gif'>GIF</option>
-            <option value='pet'>PET Adoption</option>
-        </select>
         
         <label>&nbsp;<input class="submit" type='submit'></label>
                 
@@ -153,5 +151,38 @@
     <article id="modale" class="hidden"> 
     
     </article>
+    <footer class="footer-container">
+        <div class="footer-text">
+            <p>ATTENZIONE: le informazioni contenute in questo sito hanno uno scopo puramente divulgativo e non
+                intendono sostituire il parere del proprio medico curante o di un operatore sanitario. Le informazioni
+                sul nostro portale si rivolgono a persone sane, qualsiasi regime alimentare o esercizio fisico, prima di
+                essere svolto deve essere supervisionato dalla figura competente ai termini della legge italiana. Il
+                Project inVictus SRL non detiene nessuna responsabilità, in quanto le informazioni hanno uno scopo
+                divulgativo
+                e la persona prima d'intraprendere qualsiasi percorso alimentare o d'attività fisica, deve consultarsi
+                col proprio medico di fiducia.</p>
+        </div>
+        <div class="footer-text">
+            <div>
+                <a class="icon-item-vletter"><img src="img\Invictusletter.png" alt=""></a>
+            </div>
+            <p>© Copyright 2017-2024 Project inVictus - Tutti i diritti sono riservati<br>
+                PROJECT INVICTUS S.R.L. a socio unico - Via Milano 96 25126 BRESCIA - P.IVA-C.F. 09824090964 -
+                projectinvictussrl@lamiapec.it - Codice SDI: T04ZHR3 –
+                Numero REA: BS - 577715<br>
+                Termini e condizioni - Privacy policy - Mappa del sito - Preferenze Privacy</p>
+            <div class="flex-icon">
+                <a class="icon-item" href="https://www.facebook.com/projectinvictus"><img src="img\facebookicon.png"
+                        alt=""></a>
+                <a class="icon-item"
+                    href="https://twitter.com/i/flow/login?redirect_after_login=%2FprojectinVictus"><img
+                        src="img\twittericon.png" alt=""></a>
+                <a class="icon-item" href="https://www.youtube.com/channel/UCV98ClDjqDGivOysGHFHEhw"><img
+                        src="img\youtubeicon.png" alt=""></a>
+                <a class="icon-item" href="https://www.projectinvictus.it/feed/"><img src="img\webfeed.png" alt=""></a>
+
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

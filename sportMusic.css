@@ -1,13 +1,20 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    font-family: Roboto Condensed, sans-serif;
+    background-color: rgba(6, 11, 16, 255);
+    color: #000000;
+    margin: 0;
 }
-
-h1.spotydiv {
-    color: #444;
+.spotydivprincipale{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    margin-top: 10vw;
+    background-color: #fff;
+    border-radius: 20px;
 }
-
 div.spotydiv {
     margin-bottom: 10px;
 }
@@ -29,6 +36,7 @@ button {
     background-color: #b91d1d;
     color: white;
     cursor: pointer;
+    width: 50%;
 }
 
 button:hover {

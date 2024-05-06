@@ -6,8 +6,8 @@ async function ottieniToken() {
     const risultato = await fetch('https://accounts.spotify.com/api/token', {
         method: 'POST',
         headers: {
-            'Content-Type' : 'application/x-www-form-urlencoded', 
-            'Authorization' : 'Basic ' + btoa(ClientID + ':' + secretKey)
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic ' + btoa(ClientID + ':' + secretKey)
         },
         body: 'grant_type=client_credentials'
     });
@@ -19,7 +19,7 @@ async function ottieniToken() {
 async function ottieniGeneri(token) {
     const risultato = await fetch(`https://api.spotify.com/v1/browse/categories`, {
         method: 'GET',
-        headers: { 'Authorization' : 'Bearer ' + token}
+        headers: { 'Authorization': 'Bearer ' + token }
     });
 
     const dati = await risultato.json();
@@ -30,7 +30,7 @@ async function ottieniPlaylistPerGenere(token, idGenere) {
     const limite = 10;
     const risultato = await fetch('https://api.spotify.com/v1/browse/categories/' + idGenere + '/playlists?limit=' + limite, {
         method: 'GET',
-        headers: { 'Authorization' : 'Bearer ' + token}
+        headers: { 'Authorization': 'Bearer ' + token }
     });
 
     const dati = await risultato.json();
@@ -42,7 +42,7 @@ async function ottieniBrani(token, endPointBrani) {
     const limite = 10;
     const risultato = await fetch(endPointBrani + '?limit=' + limite, {
         method: 'GET',
-        headers: { 'Authorization' : 'Bearer ' + token}
+        headers: { 'Authorization': 'Bearer ' + token }
     });
 
     const dati = await risultato.json();
@@ -52,7 +52,7 @@ async function ottieniBrani(token, endPointBrani) {
 async function ottieniBrano(token, endPointBrano) {
     const risultato = await fetch(endPointBrano, {
         method: 'GET',
-        headers: { 'Authorization' : 'Bearer ' + token}
+        headers: { 'Authorization': 'Bearer ' + token }
     });
 
     const dati = await risultato.json();
@@ -157,41 +157,62 @@ function ottieniTokenMemorizzato() {
 }
 
 // Modulo App
+/* async function caricaGeneri() {
+    const token = await ottieniToken();
+    memorizzaToken(token);
+    const generi = await ottieniGeneri(token);
+    for (let i = 0; i < generi.length; i++) {
+        creaGenere(generi[i].name, generi[i].id);
+    }
+}
+*/
+// Modulo App
 async function caricaGeneri() {
     const token = await ottieniToken();           
     memorizzaToken(token);
     const generi = await ottieniGeneri(token);
-    generi.forEach(function(elemento) {
-        creaGenere(elemento.name, elemento.id);
-    });
+    let idGenereAllenamento;
+    for (let i = 0; i < generi.length; i++) {
+        if (generi[i].name.toLowerCase() === "allenamento") {
+            creaGenere(generi[i].name, generi[i].id);
+            idGenereAllenamento = generi[i].id;
+            break;
+        }
+    }
+    if (idGenereAllenamento) {
+        const playlist = await ottieniPlaylistPerGenere(token, idGenereAllenamento);
+        for (let j = 0; j < playlist.length; j++) {
+            creaPlaylist(playlist[j].name, playlist[j].tracks.href);
+        }
+    }
 }
 
 var campiInputDOM = ottieniCampiInput();
 
-campiInputDOM.genere.addEventListener('change', async function() {
+campiInputDOM.genere.addEventListener('change', async function () {
     resettaPlaylist();
-    const token = ottieniTokenMemorizzato().token;        
-    const selectGenere = ottieniCampiInput().genere;       
-    const idGenere = selectGenere.options[selectGenere.selectedIndex].value;             
-    const playlist = await ottieniPlaylistPerGenere(token, idGenere);       
-    playlist.forEach(function(p) {
+    const token = ottieniTokenMemorizzato().token;
+    const selectGenere = ottieniCampiInput().genere;
+    const idGenere = selectGenere.options[selectGenere.selectedIndex].value;
+    const playlist = await ottieniPlaylistPerGenere(token, idGenere);
+    playlist.forEach(function (p) {
         creaPlaylist(p.name, p.tracks.href);
     });
 });
 
-campiInputDOM.invia.addEventListener('click', async function(e) {
+campiInputDOM.invia.addEventListener('click', async function (e) {
     e.preventDefault();
     resettaBrani();
-    const token = ottieniTokenMemorizzato().token;        
+    const token = ottieniTokenMemorizzato().token;
     const selectPlaylist = ottieniCampiInput().playlist;
     const endPointBrani = selectPlaylist.options[selectPlaylist.selectedIndex].value;
     const brani = await ottieniBrani(token, endPointBrani);
-    brani.forEach(function(el) {
+    brani.forEach(function (el) {
         creaBrano(el.track.href, el.track.name)
     });
 });
 
-campiInputDOM.brani.addEventListener('click', async function(e) {
+campiInputDOM.brani.addEventListener('click', async function (e) {
     e.preventDefault();
     resettaDettaglioBrano();
     const token = ottieniTokenMemorizzato().token;

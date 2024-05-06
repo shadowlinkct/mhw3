@@ -2,6 +2,7 @@ form {
 	width: 66%;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: 10vw;
 }
 
 article {
@@ -14,8 +15,8 @@ article {
 }
 
 body {
-	font-family: Helvetica, sans-serif;
-	background-color: rgba(41, 39, 40, 255);
+	font-family: Roboto Condensed, sans-serif;
+	background-color: rgba(6, 11, 16, 255);
 	color: #fff;
 }
 
@@ -62,26 +63,6 @@ body {
 
 #modale.hidden {
 	display: none;
-}
-
-#modale {
-	position: fixed;
-	top: -20;
-	left: 0;
-	height: 100%;
-	width: 100%;
-
-	background-color: rgba(0, 0, 0, 0.9);
-	z-index: 2;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-}
-
-#modale img {
-	height: 50%;
-	border: 1px solid black;
 }
 
 .no-scroll {
